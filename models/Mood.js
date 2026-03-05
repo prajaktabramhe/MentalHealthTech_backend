@@ -24,5 +24,4 @@ const moodSchema = new mongoose.Schema({
 });
 
 const Mood = mongoose.model("Mood", moodSchema);
-
 export default Mood;
