@@ -1,23 +1,58 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import connectDB from "./config/db.js";
-import authRoutes from "./routes/authRoutes.js";
-import journalRoutes from "./routes/journalRoutes.js";
-import moodRoutes from "./routes/moodRoutes.js";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import affirmationRoutes from "./routes/affirmationRoutes.js";
+import exercises from "./routes/exercises.js";
+
 
 dotenv.config();
-connectDB();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173"
+}));
+
 app.use(express.json());
 
-app.use("/auth", authRoutes);
-app.use("/api", journalRoutes);
-app.use("/api", moodRoutes);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on port ${process.env.PORT}`);
+app.post("/api/chat", async (req, res) => {
+  try {
+
+    const { message } = req.body;
+
+    const model = genAI.getGenerativeModel({
+      model: "gemini-flash-latest"
+    });
+
+    const result = await model.generateContent(message);
+
+    const response = result.response.text();
+
+    res.json({ response });
+
+  } catch (error) {
+
+    console.error("Gemini Error:", error);
+
+    res.status(500).json({
+      error: "AI failed"
+    });
+
+  }
 });
+
+/* ---------- Affirmations Route ---------- */
+
+
+app.use("/api", affirmationRoutes);
+app.use("/api", exercises);
+
+
+app.listen(5000, () => {
+  console.log("Server running on port 5000");
+});
+
+
