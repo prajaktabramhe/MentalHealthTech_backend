@@ -4,6 +4,9 @@ import cors from "cors";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import affirmationRoutes from "./routes/affirmationRoutes.js";
 import exercises from "./routes/exercises.js";
+import userRoutes from "./routes/authRoutes.js";
+import mongoose from "mongoose";
+import moodRoutes from "./routes/moodRoutes.js";
 
 
 dotenv.config();
@@ -15,6 +18,15 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+mongoose.connect("mongodb://127.0.0.1:27017/mentalHealthDB")
+.then(() => {
+  console.log("MongoDB connected");
+})
+.catch((err) => {
+  console.error("MongoDB connection error:", err);
+});
+
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
@@ -49,6 +61,8 @@ app.post("/api/chat", async (req, res) => {
 
 app.use("/api", affirmationRoutes);
 app.use("/api", exercises);
+app.use("/auth", userRoutes);
+app.use("/api", moodRoutes);
 
 
 app.listen(5000, () => {
