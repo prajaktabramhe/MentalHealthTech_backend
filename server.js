@@ -67,7 +67,6 @@ app.post("/api/chat", async (req, res) => {
     res.status(500).json({
       error: "AI failed"
     });
-
   }
 });
 
