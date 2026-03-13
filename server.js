@@ -7,6 +7,7 @@ import exercises from "./routes/exercises.js";
 import userRoutes from "./routes/authRoutes.js";
 import mongoose from "mongoose";
 import moodRoutes from "./routes/moodRoutes.js";
+import journalRoutes from "./routes/journalRoutes.js";
 
 
 dotenv.config();
@@ -63,6 +64,7 @@ app.use("/api", affirmationRoutes);
 app.use("/api", exercises);
 app.use("/auth", userRoutes);
 app.use("/api", moodRoutes);
+app.use("/api", journalRoutes);
 
 
 app.listen(5000, () => {

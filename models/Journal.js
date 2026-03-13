@@ -12,8 +12,7 @@ const journalSchema = new mongoose.Schema({
   },
 
   moodContext: {
-    type: String,
-    required: true,
+   type: String
   },
 
   userId: {
