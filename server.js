@@ -24,6 +24,9 @@ const limiter = rateLimit({
 
 app.use(limiter);
 app.use(express.json());
+app.get("/", (req, res) => {
+  res.send("Mental Health API is running 🚀");
+});
 
 app.use(cors({
   origin: process.env.CLIENT_URL,
