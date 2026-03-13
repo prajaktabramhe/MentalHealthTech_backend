@@ -29,10 +29,13 @@ app.get("/", (req, res) => {
 });
 
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin: [
+    "http://localhost:5173",
+    "https://frontendmentalhealthtech.vercel.app",
+    "https://frontendmentalhealthtech-cehb1jb36.vercel.app"
+  ],
   credentials: true
 }));
-
 
 mongoose.connect(process.env.MONGO_URI)
 .then(() => {
