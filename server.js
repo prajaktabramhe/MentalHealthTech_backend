@@ -8,21 +8,32 @@ import userRoutes from "./routes/authRoutes.js";
 import mongoose from "mongoose";
 import moodRoutes from "./routes/moodRoutes.js";
 import journalRoutes from "./routes/journalRoutes.js";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 
 
 dotenv.config();
 
 const app = express();
+app.use(helmet());
 
-app.use(cors({
-  origin: "http://localhost:5173"
-}));
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100
+});
 
+app.use(limiter);
 app.use(express.json());
 
-mongoose.connect("mongodb://127.0.0.1:27017/mentalHealthDB")
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+  credentials: true
+}));
+
+
+mongoose.connect(process.env.MONGO_URI)
 .then(() => {
-  console.log("MongoDB connected");
+  console.log("MongoDB Atlas connected");
 })
 .catch((err) => {
   console.error("MongoDB connection error:", err);
@@ -66,9 +77,11 @@ app.use("/auth", userRoutes);
 app.use("/api", moodRoutes);
 app.use("/api", journalRoutes);
 
+/* ---------------- SERVER ---------------- */
 
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
-
 
