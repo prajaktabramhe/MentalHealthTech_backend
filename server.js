@@ -15,6 +15,17 @@ import rateLimit from "express-rate-limit";
 dotenv.config();
 
 const app = express();
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://frontendmentalhealthtech.vercel.app",
+    "https://frontendmentalhealthtech-cehb1jb36.vercel.app"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
+app.use(express.json());
 app.use(helmet());
 
 const limiter = rateLimit({
@@ -28,14 +39,6 @@ app.get("/", (req, res) => {
   res.send("Mental Health API is running 🚀");
 });
 
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://frontendmentalhealthtech.vercel.app",
-    "https://frontendmentalhealthtech-cehb1jb36.vercel.app"
-  ],
-  credentials: true
-}));
 
 mongoose.connect(process.env.MONGO_URI)
 .then(() => {
